@@ -1,0 +1,29 @@
+{
+  "name": "whenzel",
+  "version": "1.0.0",
+  "description": "A JS library for checking dates of recurring events and holidays",
+  "main": "dist/whenzel.js",
+  "repository": "https://github.com/IMAGINARY/whenzel.git",
+  "author": "Eric Londaits <eric.londaits@imaginary.org>",
+  "license": "APACHE",
+  "private": false,
+  "engines": {
+    "node": "^10.14.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.2",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
