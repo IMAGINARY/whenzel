@@ -15,11 +15,13 @@ var paths = {
 };
 
 var bundleName = 'whenzel';
+var globalName = 'Whenzel';
 
 function scripts() {
   return browserify({
     extensions: ['.js'],
     entries: './src/main.js',
+    standalone: globalName
   })
     .transform('babelify', { presets: ['@babel/env'] })
     .on('error', function(msg) {
