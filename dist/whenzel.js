@@ -3,8 +3,8 @@
 
 function test(pattern) {
   var date = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Date();
-  var isoDate = date.toISOString();
-  var matches = pattern.match(/^(\d\d\d\d)-(\d\d)-(\d\d)$/);
+  var isoDate = date.toISOString().substr(0, 'xxxx-xx-xx'.length);
+  var matches = pattern.match(/^(\?\?\?\?|\d\d\d\d)-(\?\?|\d\d)-(\?\?|\d\d)$/);
 
   if (matches === null) {
     throw new Error("Invalid ISO date '".concat(pattern, "'"));
@@ -18,7 +18,8 @@ function test(pattern) {
     throw new Error("Invalid day in ISO date '".concat(pattern, "'"));
   }
 
-  return isoDate.substr(0, pattern.length) === pattern;
+  var re = new RegExp("^".concat(pattern, "$").replace(/\?/g, '\\d'));
+  return isoDate.match(re) !== null;
 }
 
 module.exports = {

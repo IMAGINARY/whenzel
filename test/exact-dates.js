@@ -1,11 +1,21 @@
 const should = require('chai').should();
-const Whenzel = require('../dist/whenzel');
+const Whenzel = require('../');
 
 describe('Whenzel', () => {
   describe('when testing exact dates', () => {
-    it('should indicate if they match', () => {
+    it('should return true if the pattern matches', () => {
+      Whenzel.test('2019-12-25', new Date(2019, 11, 25)).should.be.true;
+      Whenzel.test('2019-01-01', new Date(2019, 0, 1)).should.be.true;
+      Whenzel.test('2019-01-09', new Date(2019, 0, 9)).should.be.true;
+      Whenzel.test('2019-01-10', new Date(2019, 0, 10)).should.be.true;
+      Whenzel.test('2019-01-31', new Date(2019, 0, 31)).should.be.true;
+      Whenzel.test('2019-02-28', new Date(2019, 1, 28)).should.be.true;
+      Whenzel.test('1977-12-14', new Date(1977, 11, 14)).should.be.true;
+      Whenzel.test('2035-12-14', new Date(2035, 11, 14)).should.be.true;
+    });
+
+    it('should return false if the pattern does not match', () => {
       const aDate = new Date(2019, 11, 25);
-      Whenzel.test('2019-12-25', aDate).should.be.true;
       Whenzel.test('2019-12-24', aDate).should.be.false;
       Whenzel.test('2019-12-26', aDate).should.be.false;
       Whenzel.test('2018-12-25', aDate).should.be.false;

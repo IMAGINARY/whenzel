@@ -21,5 +21,16 @@ or in a browser via the global `Whenzel`.
 ### Exact dates
 
 ```
-const todayIsChristmas = Whenzel.test('2019-12-25');
+const todayIsChristmas2019 = Whenzel.test('2019-12-25');
 ``` 
+
+## Recurring dates
+
+```
+const todayIsChristmas = Whenzel.test('????-12-25');
+const todayIsTheFirst = Whenzel.test('????-??-01');
+``` 
+
+You can replace any (or all) of the parts of the date by question marks to match any year, month or day. You
+must use four question marks for the year (`????`) or two question marks for the month or day (`??`). It's not
+possible to use a partial pattern such as `20??` or `1?`.
