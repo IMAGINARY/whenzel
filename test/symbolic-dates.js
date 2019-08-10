@@ -108,7 +108,6 @@ describe('Whenzel', () => {
     });
 
     it('should support standalone symbols with deltas', () => {
-      debugger;
       Whenzel.test('@valentinesDay-4', new Date(2019, 1, 9)).should.be.false;
       Whenzel.test('@valentinesDay-4', new Date(2019, 1, 10)).should.be.true;
       Whenzel.test('@valentinesDay-4', new Date(2019, 1, 11)).should.be.false;

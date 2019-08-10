@@ -896,6 +896,11 @@ assign-symbols@^1.0.0:
   resolved "https://registry.yarnpkg.com/assign-symbols/-/assign-symbols-1.0.0.tgz#59667f41fadd4f20ccbc2bb96b8d4f7f78ec0367"
   integrity sha1-WWZ/QfrdTyDMvCu5a41Pf3jsA2c=
 
+astronomia@^2.0.1:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/astronomia/-/astronomia-2.0.3.tgz#fb803c9f65e0529def9f29e09c553762aefe0ac3"
+  integrity sha512-/wysi5lp7RqliNhKhre3gv05vtSV/0fSXzO2IGHyFwXShbPVA5/8QkcLKgeMhTiw1lD7drWGtAH8PtshnCuT9w==
+
 async-done@^1.2.0, async-done@^1.2.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/async-done/-/async-done-1.3.2.tgz#5e15aa729962a4b07414f528a88cdf18e0b290a2"
@@ -1556,6 +1561,18 @@ dash-ast@^1.0.0:
   resolved "https://registry.yarnpkg.com/dash-ast/-/dash-ast-1.0.0.tgz#12029ba5fb2f8aa6f0a861795b23c1b4b6c27d37"
   integrity sha512-Vy4dx7gquTeMcQR/hDkYLGUnwVil6vk4FOOct+djUnHOUWt+zJPJAaRIXaAFkPXtJjvlY7o3rfRu0/3hpnwoUA==
 
+date-chinese@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/date-chinese/-/date-chinese-1.0.6.tgz#e06c9ea6d55195213ff3634017992ada2438fc8b"
+  integrity sha512-6eAT+aMA3aFwW04OWkY2N5lTRMyOR2Egb4zRCHXV6u1ka2pcLxS4KZi8RXwe5jt36yG8HOWqRn4SeLBqG1wrdw==
+  dependencies:
+    astronomia "^2.0.1"
+
+date-easter@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/date-easter/-/date-easter-0.2.4.tgz#744b7751490c4869a221f9b0461f3a2f81e788cc"
+  integrity sha512-y/n/1kNLr/bKqQf0kYNdeIBP7FTKqOn1QCnP0TGRHEyEgvFhjUY5JnnL4F7THszESVRyNhbOW74Xd+eezrvRMQ==
+
 date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
@@ -2099,6 +2116,11 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
+gematriya@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/gematriya/-/gematriya-1.0.1.tgz#0f45949aee67227d06ddffc7e2febf4914876c39"
+  integrity sha1-D0WUmu5nIn0G3f/H4v6/SRSHbDk=
+
 get-assigned-identifiers@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/get-assigned-identifiers/-/get-assigned-identifiers-1.2.0.tgz#6dbf411de648cbaf8d9169ebb0d2d576191e2ff1"
@@ -2402,6 +2424,14 @@ he@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
+
+hebcal@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/hebcal/-/hebcal-2.3.1.tgz#ba9fb55ed346e36df439ec6b7378fd0757d88e1b"
+  integrity sha512-FiAZyhwrbu/Y6V+VEbvxthbfaZ5AtnBKJesCD/9T85BX9VolTJesYWlRt54zll1c6OI086e2PwjMPHi/F1jtKw==
+  dependencies:
+    gematriya "^1.0.1"
+    suncalc "^1.8.0"
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
@@ -4355,6 +4385,11 @@ subarg@^1.0.0:
   integrity sha1-9izxdYHplrSPyWVpn1TAauJouNI=
   dependencies:
     minimist "^1.1.0"
+
+suncalc@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/suncalc/-/suncalc-1.8.0.tgz#1d9898109563078750f4994a959e654d876acbf5"
+  integrity sha1-HZiYEJVjB4dQ9JlKlZ5lTYdqy/U=
 
 supports-color@6.0.0:
   version "6.0.0"

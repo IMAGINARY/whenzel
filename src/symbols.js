@@ -1,3 +1,7 @@
+const easter = require('./special-dates/easter').easter;
+const chineseNewYear = require('./special-dates/chinese').chineseNewYear;
+const hebrew = require('./special-dates/hebrew');
+
 const symbols = {
   christmasEve: '????-12-24',
   christmas: '????-12-25',
@@ -13,6 +17,11 @@ const symbols = {
   laborDay: '????-05-01',
   piDay: '????-03-14',
   idm: '????-03-14',
+  easter,
+  chineseNewYear,
+  roshHashanah: hebrew.roshHashanah,
+  hanukkahStart: hebrew.hanukkahStart,
+  hanukkahEnd: hebrew.hanukkahEnd,
 };
 
 function lookup(name, date) {

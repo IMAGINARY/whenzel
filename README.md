@@ -104,8 +104,9 @@ and even some events that change date every year (these are calculated according
 - @easter
 - @chineseNewYear
 - @roshHashanah
-- @hanukkah
-- @arabicNewYear
+- @hanukkahStart
+- @hanukkahEnd
 
 **NOTE**: Although these symbolic names can be used in ranges, they're resolved against the date
-being checked: so ranges that wrap around from one year to the next will be considered empty.
+being checked: so ranges that wrap around from one year to the next will be considered empty. When
+checking hannukkah use `@hannukahStart / @hannukahEnd` instead of a delta for this very reason.
