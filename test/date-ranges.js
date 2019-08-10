@@ -217,11 +217,25 @@ describe('Whenzel', () => {
     });
 
     it('should fail if either of the dates are invalid', () => {
-
+      const callingWith = (pattern) => (() => Whenzel.test(pattern));
+      callingWith('2019-12-25 / 2019-13-25').should.throw();
+      callingWith('2019-13-25 / 2019-12-25').should.throw();
+      callingWith('2019-01-50 / 2019-12-25').should.throw();
+      callingWith('2019-01-50 / 2019-20-25').should.throw();
+      callingWith('2019-01-50 / 2019-20-38').should.throw();
     });
 
     it('should fail if the pattern syntax is wrong', () => {
-
+      const callingWith = (pattern) => (() => Whenzel.test(pattern));
+      callingWith('12019-13-25 / 2019-22-25').should.throw();
+      callingWith('???-12-25 / 2019-12-25').should.throw();
+      callingWith('2019-12-25 / 2019-???-25').should.throw();
+      callingWith('2019-12-25 / ?-01-25').should.throw();
+      callingWith('/ 2019-12-25').should.throw();
+      callingWith('2019-12-25 /').should.throw();
+      callingWith('2019-12-25 / ????').should.throw();
+      callingWith('2019-12-25 / -').should.throw();
+      callingWith('2019-12-25 / 2019').should.throw();
     });
   });
 });
