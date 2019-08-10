@@ -60,3 +60,52 @@ Range matching supports rollover:
 const itsWinter = Whenzel.test('????-12-21 / ????-03-21');
 const not5to10 = Whenzel.test('????-??-10 / ????-??-05');
 ```
+
+## Symbolic dates
+
+The library allows using symbolic names for certain holidays and moments of the year:
+
+```
+const todayIsChristmas = Whenzel.test('@christmas');
+```
+
+A delta (in days) can also be specified:
+
+```
+const aroundChristmas = Whenzel.test('@christmas-3 / @christmas+3');
+```
+
+**NOTE**: Deltas are calculated based on the year being checked, which might cause a difference depending on
+whether it's a leap year or not. Thus, it's possible to get a range that's off by one when using deltas in 
+ranges that begin on one year and end on the next. Don't use this library to operate nuclear facilities, 
+petroleum extraction platforms, yada yada yada.
+
+The list of available symbols is:
+
+- @christmasEve
+- @christmas
+- @boxingDay
+
+- @newYearsEve
+- @newYear
+
+- @halloween
+- @allSaintsDay
+- @aprilFools
+- @earthDay
+- @valentinesDay
+- @stPatrick
+- @laborDay
+- @piDay (3/14)
+- @idm (International Day of Mathematics)
+
+and even some events that change date every year (these are calculated according to the date being checked):
+
+- @easter
+- @chineseNewYear
+- @roshHashanah
+- @hanukkah
+- @arabicNewYear
+
+**NOTE**: Although these symbolic names can be used in ranges, they're resolved against the date
+being checked: so ranges that wrap around from one year to the next will be considered empty.

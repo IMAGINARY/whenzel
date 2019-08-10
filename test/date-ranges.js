@@ -33,7 +33,6 @@ describe('Whenzel', () => {
     });
 
     it('should work with ranges with no lower bound', () => {
-      debugger
       Whenzel.test('????-??-?? / 2019-12-25', new Date(1984, 11, 27)).should.be.true;
       Whenzel.test('????-??-?? / 2019-12-25', new Date(2019, 11, 24)).should.be.true;
       Whenzel.test('????-??-?? / 2019-12-25', new Date(2019, 11, 25)).should.be.true;

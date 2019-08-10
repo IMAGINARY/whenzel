@@ -1,3 +1,5 @@
+const WhenzelSymbols = require('./symbols');
+
 function validateDatePattern(pattern, context='') {
   const matches = pattern.match(/^(\?\?\?\?|\d\d\d\d)-(\?\?|\d\d)-(\?\?|\d\d)$/);
   if (matches === null) {
@@ -61,6 +63,56 @@ function buildBounds(patternFrom, patternTo, date) {
   return [lowerParts.join('-'), upperParts.join('-')];
 }
 
+function resolveExpression(expression, date) {
+  if (expression.length < 2) {
+    return expression;
+  }
+
+  if (expression[0] === '@') {
+    const matches = expression.match(/^@([a-zA-Z0-9]+)\s*([\+\-]\s*\d{1,3})?$/);
+    if (matches === null) {
+      throw new Error(`Invalid expression: '${expression}'`)
+    }
+    let deltaSign = 1;
+    let delta = 0;
+    if (matches[2] !== undefined) {
+      deltaSign = (matches[2][0] === '-' ? -1 : 1);
+      delta = Number(matches[2].substr(1));
+    }
+
+    return resolveSymbol(matches[1], date, deltaSign * delta);
+  }
+
+  return expression;
+}
+
+function resolveSymbol(name, date, delta) {
+
+  let pattern = WhenzelSymbols.lookup(name, date);
+  if (delta !== 0) {
+    const patternParts = pattern.split('-');
+    const shiftedDate = new Date(date);
+    if (patternParts[0] !== '????') {
+      shiftedDate.setFullYear(Number(patternParts[0]));
+    }
+    if (patternParts[1] !== '??') {
+      shiftedDate.setMonth(Number(patternParts[1]) - 1);
+    }
+    if (patternParts[2] !== '??') {
+      shiftedDate.setDate(Number(patternParts[2]));
+    }
+    shiftedDate.setDate(shiftedDate.getDate() + delta);
+    const isoDate = shiftedDate.toISOString().substr(0, 'xxxx-xx-xx'.length);
+    const isoDateParts = isoDate.split('-');
+    return [
+      patternParts[0] === '????' ? patternParts[0] : isoDateParts[0],
+      isoDateParts[1] === '??' ? patternParts[1] : isoDateParts[1],
+      isoDateParts[2] === '??' ? patternParts[2] : isoDateParts[2],
+    ].join('-')
+  }
+  return pattern;
+}
+
 function testDate(pattern, date = new Date()) {
   validateDatePattern(pattern);
   const re = new RegExp(`^${pattern}$`.replace(/\?/g, '\\d'));
@@ -83,9 +135,16 @@ function testDateRange(patternFrom, patternTo, date = new Date()) {
 function test(pattern, date = new Date()) {
   const rangeParts = pattern.split('/');
   if (rangeParts.length === 1) {
-    return testDate(pattern.trim(), date);
+    return testDate(
+      resolveExpression(pattern.trim(), date),
+      date
+    );
   } else {
-    return testDateRange(rangeParts[0].trim(), rangeParts[1].trim(), date);
+    return testDateRange(
+      resolveExpression(rangeParts[0].trim(), date),
+      resolveExpression(rangeParts[1].trim(), date),
+      date
+    );
   }
 }
 
