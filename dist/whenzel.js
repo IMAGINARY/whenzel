@@ -12671,7 +12671,110 @@ else window.SunCalc = SunCalc;
 },{}],33:[function(require,module,exports){
 "use strict";
 
+function saturdaysBefore(d) {
+  var i = new Date(d);
+  var saturdays = 0;
+  i.setDate(i.getDate() - 1);
+
+  while (i.getMonth() === d.getMonth()) {
+    if (i.getDay() === 6) {
+      saturdays += 1;
+    }
+
+    i.setDate(i.getDate() - 1);
+  }
+
+  return saturdays;
+}
+
+var filters = {
+  monday: function monday(d) {
+    return d.getDay() === 1;
+  },
+  tuesday: function tuesday(d) {
+    return d.getDay() === 2;
+  },
+  wednesday: function wednesday(d) {
+    return d.getDay() === 3;
+  },
+  thursday: function thursday(d) {
+    return d.getDay() === 4;
+  },
+  friday: function friday(d) {
+    return d.getDay() === 5;
+  },
+  saturday: function saturday(d) {
+    return d.getDay() === 6;
+  },
+  sunday: function sunday(d) {
+    return d.getDay() === 0;
+  },
+  weekday: function weekday(d) {
+    return d.getDay() !== 6 && d.getDay() !== 0;
+  },
+  weekend: function weekend(d) {
+    return d.getDay() === 6 || d.getDay() === 0;
+  },
+  week1: function week1(d) {
+    return saturdaysBefore(d) === 0;
+  },
+  week2: function week2(d) {
+    return saturdaysBefore(d) === 1;
+  },
+  week3: function week3(d) {
+    return saturdaysBefore(d) === 2;
+  },
+  week4: function week4(d) {
+    return saturdaysBefore(d) === 3;
+  },
+  week5: function week5(d) {
+    return saturdaysBefore(d) === 4;
+  },
+  week6: function week6(d) {
+    return saturdaysBefore(d) === 5;
+  },
+  firstDayOfMonth: function firstDayOfMonth(d) {
+    return d.getDate() === 1;
+  },
+  lastDayOfMonth: function lastDayOfMonth(d) {
+    var next = new Date(d);
+    next.setDate(next.getDate() + 1);
+    return next.getDate() === 1;
+  },
+  leapDay: function leapDay(d) {
+    return d.getMonth() === 1 && d.getDate() === 29;
+  },
+  pythagoras: function pythagoras(d) {
+    return Math.pow(d.getFullYear() % 100, 2) === Math.pow(d.getDate(), 2) + Math.pow(d.getMonth() + 1, 2);
+  },
+  always: function always(d) {
+    return true;
+  },
+  never: function never(d) {
+    return false;
+  }
+};
+
+function lookup(name) {
+  var value = filters[name];
+
+  if (value === undefined) {
+    throw new Error("Unknown filter '".concat(name, "'"));
+  }
+
+  return value;
+}
+
+module.exports = {
+  lookup: lookup
+};
+
+},{}],34:[function(require,module,exports){
+"use strict";
+
 var WhenzelSymbols = require('./symbols');
+
+var WhenzelFilters = require('./filters');
 
 function validateDatePattern(pattern) {
   var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -12803,8 +12906,7 @@ function testDateRange(patternFrom, patternTo) {
   return isoDate >= bounds[0] && isoDate <= bounds[1];
 }
 
-function test(pattern) {
-  var date = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Date();
+function dateSelector(pattern, date) {
   var rangeParts = pattern.split('/');
 
   if (rangeParts.length === 1) {
@@ -12814,11 +12916,46 @@ function test(pattern) {
   }
 }
 
+function test(pattern) {
+  var date = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Date();
+  var patternParts = pattern.match(/^([^#]*)?\s*(#.+)?$/);
+
+  if (patternParts === null) {
+    throw new Error("Invalid test pattern '".concat(pattern, "'"));
+  }
+
+  var selectors = [];
+
+  if (patternParts[1] !== undefined) {
+    selectors.push(function (d) {
+      return dateSelector(patternParts[1].trim(), d);
+    });
+  }
+
+  if (patternParts[2] !== undefined) {
+    var filterSelectors = patternParts[2].trim().split(/\s+/);
+    filterSelectors.forEach(function (filterSelector) {
+      if (filterSelector.substr(0, 1) !== '#') {
+        throw new Error("Unexpected '".concat(filterSelector, "' in pattern"));
+      }
+
+      var filter = WhenzelFilters.lookup(filterSelector.substr(1));
+      selectors.push(function (d) {
+        return filter(d);
+      });
+    });
+  }
+
+  return selectors.every(function (selector) {
+    return selector(date);
+  });
+}
+
 module.exports = {
   test: test
 };
 
-},{"./symbols":37}],34:[function(require,module,exports){
+},{"./filters":33,"./symbols":38}],35:[function(require,module,exports){
 "use strict";
 
 var CalendarChinese = require('date-chinese').CalendarChinese;
@@ -12834,7 +12971,7 @@ module.exports = {
   chineseNewYear: chineseNewYearPattern
 };
 
-},{"date-chinese":20}],35:[function(require,module,exports){
+},{"date-chinese":20}],36:[function(require,module,exports){
 "use strict";
 
 var easter = require('date-easter');
@@ -12847,7 +12984,7 @@ module.exports = {
   easter: easterPattern
 };
 
-},{"date-easter":21}],36:[function(require,module,exports){
+},{"date-easter":21}],37:[function(require,module,exports){
 "use strict";
 
 var Hebcal = require('hebcal');
@@ -12886,7 +13023,7 @@ module.exports = {
   hanukkahEnd: hanukkahEndPattern
 };
 
-},{"hebcal":29}],37:[function(require,module,exports){
+},{"hebcal":29}],38:[function(require,module,exports){
 "use strict";
 
 var easter = require('./special-dates/easter').easter;
@@ -12939,5 +13076,5 @@ module.exports = {
   lookup: lookup
 };
 
-},{"./special-dates/chinese":34,"./special-dates/easter":35,"./special-dates/hebrew":36}]},{},[33])(33)
+},{"./special-dates/chinese":35,"./special-dates/easter":36,"./special-dates/hebrew":37}]},{},[34])(34)
 });

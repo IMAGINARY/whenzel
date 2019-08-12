@@ -110,3 +110,44 @@ and even some events that change date every year (these are calculated according
 **NOTE**: Although these symbolic names can be used in ranges, they're resolved against the date
 being checked: so ranges that wrap around from one year to the next will be considered empty. When
 checking hannukkah use `@hannukahStart / @hannukahEnd` instead of a delta for this very reason.
+
+## Filters
+
+Filters allow seeing if the date matches special conditions that go beyond what patterns and ranges can
+express. They can be used on their own or combined with other patterns. Place filters separated by
+spaces after any pattern.
+
+```
+const itsMonday = Whenzel.test('#monday');
+const firstSunday = Whenzel.test('#sunday #week1');
+const mondaysInJanuary =  Whenzel.test('????-01-01 / ????-01-31 #monday');
+```
+
+Available filters are:
+
+- #monday
+- #tuesday
+- #wednesday
+- #thursday
+- #friday
+- #saturday
+- #sunday
+
+- #weekday
+- #weekend
+
+- #week1
+- #week2
+- #week3
+- #week4
+- #week5
+- #week6
+
+- #firstDayOfMonth
+- #lastDayOfMonth
+
+- #leapDay (matches the 29th of february)
+- #pythagoras (matches if year^2 = month^2 + day^2)
+
+- #always
+- #never

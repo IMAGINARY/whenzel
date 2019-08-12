@@ -1,4 +1,5 @@
 const WhenzelSymbols = require('./symbols');
+const WhenzelFilters = require('./filters');
 
 function validateDatePattern(pattern, context='') {
   const matches = pattern.match(/^(\?\?\?\?|\d\d\d\d)-(\?\?|\d\d)-(\?\?|\d\d)$/);
@@ -132,7 +133,7 @@ function testDateRange(patternFrom, patternTo, date = new Date()) {
   return isoDate >= bounds[0] && isoDate <= bounds[1];
 }
 
-function test(pattern, date = new Date()) {
+function dateSelector(pattern, date) {
   const rangeParts = pattern.split('/');
   if (rangeParts.length === 1) {
     return testDate(
@@ -146,6 +147,29 @@ function test(pattern, date = new Date()) {
       date
     );
   }
+}
+
+function test(pattern, date = new Date()) {
+  const patternParts = pattern.match(/^([^#]*)?\s*(#.+)?$/);
+  if (patternParts === null) {
+    throw new Error(`Invalid test pattern '${pattern}'`);
+  }
+  const selectors = [];
+  if (patternParts[1] !== undefined) {
+    selectors.push((d) => { return dateSelector(patternParts[1].trim(), d); });
+  }
+  if (patternParts[2] !== undefined) {
+    const filterSelectors = patternParts[2].trim(). split(/\s+/);
+    filterSelectors.forEach((filterSelector) => {
+      if (filterSelector.substr(0, 1) !== '#') {
+        throw new Error(`Unexpected '${filterSelector}' in pattern`);
+      }
+      const filter = WhenzelFilters.lookup(filterSelector.substr(1));
+      selectors.push(d => filter(d));
+    });
+  }
+
+  return selectors.every(selector => selector(date));
 }
 
 module.exports = {
