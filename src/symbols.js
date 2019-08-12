@@ -2,6 +2,12 @@ const easter = require('./special-dates/easter').easter;
 const chineseNewYear = require('./special-dates/chinese').chineseNewYear;
 const hebrew = require('./special-dates/hebrew');
 
+/**
+ * Dictionary of symbols
+ *
+ * Each symbol is either a date pattern (string) or a function that receives a reference
+ * date and returns the closest date pattern for that holiday / special date relative to it.
+ */
 const symbols = {
   christmasEve: '????-12-24',
   christmas: '????-12-25',
@@ -24,6 +30,14 @@ const symbols = {
   hanukkahEnd: hebrew.hanukkahEnd,
 };
 
+/**
+ * Lookup a symbol by name relative to a reference date being checked
+ *
+ * @param {string} name
+ * @param {Date} date
+ * @return {string}
+ * @throws {Error}
+ */
 function lookup(name, date) {
   const value = symbols[name];
   if (value === undefined) {

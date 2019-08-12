@@ -151,3 +151,8 @@ Available filters are:
 
 - #always
 - #never
+
+### Errors
+
+If Whenzel finds an error in the expression being tested it'll throw an exception with a description of the
+problem found. 

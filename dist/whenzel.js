@@ -12671,6 +12671,12 @@ else window.SunCalc = SunCalc;
 },{}],33:[function(require,module,exports){
 "use strict";
 
+/**
+ * Returns the number of saturdays in the month before the passed date.
+ *
+ * @param {Date} d
+ * @return {number}
+ */
 function saturdaysBefore(d) {
   var i = new Date(d);
   var saturdays = 0;
@@ -12686,6 +12692,12 @@ function saturdaysBefore(d) {
 
   return saturdays;
 }
+/**
+ * Dictionary of filters
+ *
+ * Each filter is a function that receives a Date and returns a boolean if the date matches the filter.
+ */
+
 
 var filters = {
   monday: function monday(d) {
@@ -12747,13 +12759,20 @@ var filters = {
   pythagoras: function pythagoras(d) {
     return Math.pow(d.getFullYear() % 100, 2) === Math.pow(d.getDate(), 2) + Math.pow(d.getMonth() + 1, 2);
   },
-  always: function always(d) {
+  always: function always() {
     return true;
   },
-  never: function never(d) {
+  never: function never() {
     return false;
   }
 };
+/**
+ * Lookup a filter by name
+ *
+ * @param {string} name
+ * @return {function}
+ * @throws {Error}
+ */
 
 function lookup(name) {
   var value = filters[name];
@@ -12776,6 +12795,19 @@ var WhenzelSymbols = require('./symbols');
 
 var WhenzelFilters = require('./filters');
 
+var YEAR = 0,
+    MONTH = 1,
+    DAY = 2;
+/**
+ * Checks whether a date pattern is valid and throws exceptions if it isn't
+ *
+ * @param {string} pattern
+ * @param {string} context
+ *   Context in which the check is being performed, which will be added to the
+ *   exception error message.
+ * @throws {Error}
+ */
+
 function validateDatePattern(pattern) {
   var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
   var matches = pattern.match(/^(\?\?\?\?|\d\d\d\d)-(\?\?|\d\d)-(\?\?|\d\d)$/);
@@ -12792,17 +12824,50 @@ function validateDatePattern(pattern) {
     throw new Error("Invalid day in ISO date '".concat(pattern, "'").concat(context));
   }
 }
+/**
+ * Replaces the parts of a parsed ISO date that contain wildcards to the
+ * actual year, month or day of the passed date.
+ *
+ * @param {[string, string, string]} patternParts
+ *  An array containing year, month and day from a parsed ISO date or wildcards.
+ * @param {Date} date
+ * @return {string}
+ *  A date in ISO format (yyyy-mm-dd)
+ */
+
+
+function replaceWildcards(patternParts, date) {
+  var isoDate = date.toISOString().substr(0, 'xxxx-xx-xx'.length);
+  var dateParts = isoDate.split('-');
+  var resultParts = ['', '', ''];
+  resultParts[DAY] = patternParts[DAY] === '??' ? dateParts[DAY] : patternParts[DAY];
+  resultParts[MONTH] = patternParts[MONTH] === '??' ? dateParts[MONTH] : patternParts[MONTH];
+  resultParts[YEAR] = patternParts[YEAR] === '????' ? dateParts[YEAR] : patternParts[YEAR];
+  return resultParts.join('-');
+}
+/**
+ * Converts to date patterns into actual bounds relative to a date.
+ *
+ * Patterns with wildcards can specify bounds that roll over to the next or previous
+ * year (e.g. ????-12-01 / ????-03-01) or month (????-??-30 / ????-??-05). This function
+ * checks if the patterns roll over and modifies the patterns with wildcards to
+ * actual lower and upper bound dates relative to the date being checked to allow for
+ * straightforward testing.
+ *
+ * @param {string} patternFrom
+ * @param {string} patternTo
+ * @param {Date} date
+ * @return {[string, string]}
+ * @throws {Error}
+ *  An array where the first element is the lower bound and the second is the upper bound.
+ */
+
 
 function buildBounds(patternFrom, patternTo, date) {
-  var YEAR = 0,
-      MONTH = 1,
-      DAY = 2;
   var isoDate = date.toISOString().substr(0, 'xxxx-xx-xx'.length);
   var dateParts = isoDate.split('-');
   var fromParts = patternFrom.split('-');
   var toParts = patternTo.split('-');
-  var lowerParts = ['', '', ''];
-  var upperParts = ['', '', ''];
   var monthRollover = fromParts[DAY] !== '??' && toParts[DAY] !== '??' && fromParts[DAY] > toParts[DAY];
   var yearRollover = fromParts[MONTH] !== '??' && toParts[MONTH] !== '??' && (fromParts[MONTH] > toParts[MONTH] || fromParts[MONTH] === toParts[MONTH] && monthRollover);
   var fromDate = new Date(date);
@@ -12822,18 +12887,17 @@ function buildBounds(patternFrom, patternTo, date) {
     }
   }
 
-  var isoToDate = toDate.toISOString().substr(0, 'xxxx-xx-xx'.length);
-  var toDatePars = isoToDate.split('-');
-  var isoFromDate = fromDate.toISOString().substr(0, 'xxxx-xx-xx'.length);
-  var fromDatePars = isoFromDate.split('-');
-  lowerParts[DAY] = fromParts[DAY] === '??' ? fromDatePars[DAY] : fromParts[DAY];
-  lowerParts[MONTH] = fromParts[MONTH] === '??' ? fromDatePars[MONTH] : fromParts[MONTH];
-  lowerParts[YEAR] = fromParts[YEAR] === '????' ? fromDatePars[YEAR] : fromParts[YEAR];
-  upperParts[DAY] = toParts[DAY] === '??' ? toDatePars[DAY] : toParts[DAY];
-  upperParts[MONTH] = toParts[MONTH] === '??' ? toDatePars[MONTH] : toParts[MONTH];
-  upperParts[YEAR] = toParts[YEAR] === '????' ? toDatePars[YEAR] : toParts[YEAR];
-  return [lowerParts.join('-'), upperParts.join('-')];
+  return [replaceWildcards(fromParts, fromDate), replaceWildcards(toParts, toDate)];
 }
+/**
+ * Expands an expression by processing any symbols in it
+ *
+ * @param {string} expression
+ * @param {Date} date
+ * @return {string}
+ * @throws {Error}
+ */
+
 
 function resolveExpression(expression, date) {
   if (expression.length < 2) {
@@ -12841,7 +12905,7 @@ function resolveExpression(expression, date) {
   }
 
   if (expression[0] === '@') {
-    var matches = expression.match(/^@([a-zA-Z0-9]+)\s*([\+\-]\s*\d{1,3})?$/);
+    var matches = expression.match(/^@([a-zA-Z0-9]+)\s*([+\-]\s*\d{1,3})?$/);
 
     if (matches === null) {
       throw new Error("Invalid expression: '".concat(expression, "'"));
@@ -12860,6 +12924,21 @@ function resolveExpression(expression, date) {
 
   return expression;
 }
+/**
+ * Converts a symbolic date to a date pattern.
+ *
+ * Looks up the symbolic date in the table and converts it to a date pattern by applying
+ * the specified delta.
+ *
+ * @param {string} name
+ *  Name of the symbol
+ * @param {Date} date
+ * @param {Number} delta
+ *  Number of days to deviate from the symbolic date
+ * @return {string}
+ * @throws {Error}
+ */
+
 
 function resolveSymbol(name, date, delta) {
   var pattern = WhenzelSymbols.lookup(name, date);
@@ -12888,6 +12967,15 @@ function resolveSymbol(name, date, delta) {
 
   return pattern;
 }
+/**
+ * Returns true if the date matches the date pattern
+ *
+ * @param {string} pattern
+ * @param {Date} date
+ * @return {boolean}
+ * @throws {Error}
+ */
+
 
 function testDate(pattern) {
   var date = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Date();
@@ -12896,6 +12984,16 @@ function testDate(pattern) {
   var isoDate = date.toISOString().substr(0, 'xxxx-xx-xx'.length);
   return isoDate.match(re) !== null;
 }
+/**
+ * Returns true if a date is within a range defined by two date patterns
+ *
+ * @param {string} patternFrom
+ * @param {string} patternTo
+ * @param {Date} date
+ * @return {boolean}
+ * @throws {Error}
+ */
+
 
 function testDateRange(patternFrom, patternTo) {
   var date = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Date();
@@ -12905,6 +13003,15 @@ function testDateRange(patternFrom, patternTo) {
   var isoDate = date.toISOString().substr(0, 'xxxx-xx-xx'.length);
   return isoDate >= bounds[0] && isoDate <= bounds[1];
 }
+/**
+ * Returns true if a date matches a date selector pattern (date, symbolic date or date range)
+ *
+ * @param {string} pattern
+ * @param {Date} date
+ * @return {boolean}
+ * @throws {Error}
+ */
+
 
 function dateSelector(pattern, date) {
   var rangeParts = pattern.split('/');
@@ -12915,6 +13022,17 @@ function dateSelector(pattern, date) {
     return testDateRange(resolveExpression(rangeParts[0].trim(), date), resolveExpression(rangeParts[1].trim(), date), date);
   }
 }
+/**
+ * Returns true if date matches a selector pattern
+ *
+ * See README for pattern syntax.
+ *
+ * @param {string} pattern
+ * @param {Date} date
+ * @return {boolean}
+ * @throws {Error}
+ */
+
 
 function test(pattern) {
   var date = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Date();
@@ -13031,6 +13149,13 @@ var easter = require('./special-dates/easter').easter;
 var chineseNewYear = require('./special-dates/chinese').chineseNewYear;
 
 var hebrew = require('./special-dates/hebrew');
+/**
+ * Dictionary of symbols
+ *
+ * Each symbol is either a date pattern (string) or a function that receives a reference
+ * date and returns the closest date pattern for that holiday / special date relative to it.
+ */
+
 
 var symbols = {
   christmasEve: '????-12-24',
@@ -13053,6 +13178,14 @@ var symbols = {
   hanukkahStart: hebrew.hanukkahStart,
   hanukkahEnd: hebrew.hanukkahEnd
 };
+/**
+ * Lookup a symbol by name relative to a reference date being checked
+ *
+ * @param {string} name
+ * @param {Date} date
+ * @return {string}
+ * @throws {Error}
+ */
 
 function lookup(name, date) {
   var value = symbols[name];

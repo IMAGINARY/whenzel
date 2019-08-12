@@ -1,3 +1,9 @@
+/**
+ * Returns the number of saturdays in the month before the passed date.
+ *
+ * @param {Date} d
+ * @return {number}
+ */
 function saturdaysBefore(d) {
   const i = new Date(d);
   let saturdays = 0;
@@ -11,6 +17,11 @@ function saturdaysBefore(d) {
   return saturdays;
 }
 
+/**
+ * Dictionary of filters
+ *
+ * Each filter is a function that receives a Date and returns a boolean if the date matches the filter.
+ */
 const filters = {
   monday: d => d.getDay() === 1,
   tuesday: d => d.getDay() === 2,
@@ -35,10 +46,17 @@ const filters = {
   },
   leapDay: d => d.getMonth() === 1 && d.getDate() === 29,
   pythagoras: d => Math.pow(d.getFullYear() % 100, 2) === Math.pow(d.getDate(), 2) + Math.pow(d.getMonth() + 1, 2),
-  always: d => true,
-  never: d => false
+  always: () => true,
+  never: () => false
 };
 
+/**
+ * Lookup a filter by name
+ *
+ * @param {string} name
+ * @return {function}
+ * @throws {Error}
+ */
 function lookup(name) {
   const value = filters[name];
   if (value === undefined) {
