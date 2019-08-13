@@ -18,6 +18,17 @@ or in a browser via the global `Whenzel`.
 
 ## Checking dates
 
+The `test` method allows you to check if a date matches a selector pattern. You can pass any 
+`Date` as the second parameter or the current date will be used by default.
+
+```
+const date = new Date(2019, 11, 25);
+const christmas2019 = Whenzel.test('2019-12-25', date);
+``` 
+
+In applications you should consider **always** explicitly passing a date, because that way you can test
+the effect of different dates without changing the computer's clock.
+
 ### Exact dates
 
 ```
