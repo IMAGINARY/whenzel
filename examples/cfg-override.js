@@ -26,7 +26,6 @@ const cfgOverrides = [
 ];
 
 const today = new Date(2019, 11, 25); // Christmas
-
 const activeOverrides = cfgOverrides.filter(override => Whenzel.test(override.when, today));
 const config = Object.assign({}, defaultConfig, ...activeOverrides);
 console.log(config);
