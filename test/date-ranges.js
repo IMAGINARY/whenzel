@@ -54,7 +54,6 @@ describe('Whenzel', () => {
       Whenzel.test('????-06-21 / ????-09-23', new Date(2017, 7, 13)).should.be.true;
       Whenzel.test('????-06-21 / ????-09-23', new Date(2017, 8, 22)).should.be.true;
       Whenzel.test('????-06-21 / ????-09-23', new Date(2017, 8, 23)).should.be.true;
-
       Whenzel.test('????-06-21 / ????-09-23', new Date(2017, 5, 20)).should.be.false;
       Whenzel.test('????-06-21 / ????-09-23', new Date(2017, 8, 24)).should.be.false;
       Whenzel.test('????-06-21 / ????-09-23', new Date(2017, 3, 23)).should.be.false;
@@ -72,6 +71,11 @@ describe('Whenzel', () => {
       Whenzel.test('????-12-21 / ????-03-21', new Date(2020, 2, 21)).should.be.true;
       Whenzel.test('????-12-21 / ????-03-21', new Date(2020, 2, 22)).should.be.false;
       Whenzel.test('????-12-21 / ????-03-21', new Date(2020, 5, 22)).should.be.false;
+
+      Whenzel.test('????-04-20 / ????-05-10',new Date(2020,3,15)).should.be.false;
+      Whenzel.test('????-04-20 / ????-05-10',new Date(2020,3,25)).should.be.true;
+      Whenzel.test('????-04-20 / ????-05-10',new Date(2020,4,5)).should.be.true;
+      Whenzel.test('????-04-20 / ????-05-10',new Date(2020,0,5)).should.be.false;
     });
 
     it('should work with ranges that don\'t specify a month', () => {
@@ -114,6 +118,9 @@ describe('Whenzel', () => {
       Whenzel.test('2018-??-10 / 2018-??-05', new Date(2018, 11, 10)).should.be.false;
       Whenzel.test('2018-??-10 / 2018-??-05', new Date(2018, 11, 20)).should.be.false;
       Whenzel.test('2018-??-10 / 2018-??-05', new Date(2018, 11, 31)).should.be.false;
+
+      Whenzel.test('2020-??-20 / 2020-??-10',new Date(2020, 0, 22)).should.be.true;
+      Whenzel.test('2020-??-20 / 2020-??-10',new Date(2020, 0, 15)).should.be.false;
     });
 
     it('should work with ranges that don\'t specify a day', () => {
@@ -152,6 +159,8 @@ describe('Whenzel', () => {
       Whenzel.test('????-??-20 / ????-??-05', new Date(2020, 1, 10)).should.be.false;
       Whenzel.test('????-??-20 / ????-??-05', new Date(2020, 1, 20)).should.be.true;
       Whenzel.test('????-??-20 / ????-??-05', new Date(2020, 1, 21)).should.be.true;
+      Whenzel.test('????-??-20 / ????-??-05', new Date(2020, 0, 21)).should.be.true;
+      Whenzel.test('????-??-20 / ????-??-05', new Date(2020, 0, 15)).should.be.false;
     });
 
     it('should work with ranges that don\'t specify a year or day', () => {

@@ -86,7 +86,7 @@ function buildBounds(patternFrom, patternTo, date) {
     } else {
       toDate.setFullYear(toDate.getFullYear() + 1);
     }
-  } else if (monthRollover) {
+  } else if (monthRollover && fromParts[MONTH] === '??' && toParts[MONTH] === '??') {
     if (dateParts[DAY] < fromParts[DAY]) {
       fromDate.setMonth( fromDate.getMonth() - 1);
     } else {

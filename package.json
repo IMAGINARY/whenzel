@@ -1,6 +1,6 @@
 {
   "name": "@imaginary-maths/whenzel",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A JavaScript library for checking dates of recurring events and holidays",
   "main": "dist/whenzel.js",
   "repository": "https://github.com/IMAGINARY/whenzel.git",
